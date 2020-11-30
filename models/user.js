@@ -9,7 +9,12 @@ var userSchema = new Schema({
     password: {
         type: String,
         require: true
-    }
+    },
+    library: [String],
+    posts: [String],
+    phone_number: String,
+    address: String,
+    avtURL: String
 })
 
 userSchema.pre('save', function (next) {
