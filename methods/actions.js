@@ -10,7 +10,10 @@ var functions = {
         else {
             var newUser = User({
                 name: req.body.name,
+                phone_number: req.body.phone_number,
+                address:  req.body.address,
                 password: req.body.password
+    
             });
             newUser.save(function (err, newUser) {
                 if (err) {
@@ -49,7 +52,15 @@ var functions = {
         if (req.headers.authorization && req.headers.authorization.split(' ')[0] === 'Bearer') {
             var token = req.headers.authorization.split(' ')[1]
             var decodedtoken = jwt.decode(token, config.secret)
-            return res.json({success: true, msg: 'Hello ' + decodedtoken.name})
+            //return res.json({success: true,  decodedtoken})
+            User.findOne({
+                name: decodedtoken.name
+            }, function (err, user) {
+                if(err) throw err;
+                else{
+                    return res.json({success: true, user: user})
+                }
+            })
         }
         else {
             return res.json({success: false, msg: 'No Headers'})
