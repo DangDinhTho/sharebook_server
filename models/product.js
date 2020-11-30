@@ -1,16 +1,3 @@
-<<<<<<< HEAD
-const mongoose = require('mongoose')
-const Schema = mongoose.Schema
-
-const product = new Schema({
-    title: String,
-    subtitle: String,
-    imageURLs: String,
-    owner: String,
-    time_post: Date,
-    score: int
-})
-=======
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
@@ -40,4 +27,3 @@ var product = new Schema({
 
 
 module.exports = mongoose.model('Product', product)
->>>>>>> 4166e5ca881b94321bee3584c344cf105d800857
