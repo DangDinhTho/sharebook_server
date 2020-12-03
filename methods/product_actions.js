@@ -3,11 +3,12 @@ var jwt = require('jwt-simple')
 var config = require('../config/dbconfig')
 const user = require('../models/user')
 
+
 var functions = {
 
 addNew: function (req, res) {
     
-    console.log(req.body);
+    //console.log(req.file);
     
     if (req.headers.authorization && req.headers.authorization.split(' ')[0] === 'Bearer') {
         var token = req.headers.authorization.split(' ')[1]
@@ -24,7 +25,8 @@ addNew: function (req, res) {
                 author: req.body.author,
                 publisher: req.body.publisher,
                 category: req.body.category,
-                owner: decodedtoken.name
+                owner: decodedtoken.name,
+                imageURLs: [req.file.path]
             });
             newProduct.save(function (err, newProduct) {
                 if (err) {
