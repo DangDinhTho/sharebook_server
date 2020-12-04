@@ -1,8 +1,7 @@
-var Product = require('../models/product')
+var ReviewPost = require('../models/review')
 var jwt = require('jwt-simple')
 var config = require('../config/dbconfig')
 const user = require('../models/user')
-const product = require('../models/product')
 
 
 var functions = {
@@ -19,23 +18,18 @@ addNew: function (req, res) {
             res.json({success: false, msg: 'Enter all fields'})
         }
         else {
-            var newProduct = Product({
-                title: req.body.title,
-                subtitle: req.body.subtitle,
-                price: req.body.price,
-                author: req.body.author,
-                publisher: req.body.publisher,
-                category: req.body.category,
-                owner: decodedtoken.name,
-                imageURLs: [req.file.path]
+            var newReview = ReviewPost({
+                content: req.body.content,
+                imageURLs: [req.file.path],
+                owner: decodedtoken.name
             });
-            newProduct.save(function (err, newProduct) {
+            newReview.save(function (err, newReview) {
                 if (err) {
                     res.json({success: false, msg: 'Failed to save'})
                 }
                 else {
                     //return res.json({success: true, msg: 'Successfully saved'});
-                    user.updateOne({name: decodedtoken.name}, {$push: {library: newProduct._id}}, (err, data) => {
+                    user.updateOne({name: decodedtoken.name}, {$push: {posts: newReview._id}}, (err, data) => {
                         if(err) throw err;
                         else return res.json({success: true, msg: 'Successfully saved'});
                     });
@@ -53,8 +47,8 @@ addNew: function (req, res) {
     
 },
 
-getAllBook: function(req, res){
-    product.find({}, function(err, result) {
+getAllPosts: function(req, res){
+    ReviewPost.find({}, function(err, result) {
         if (err) {
           console.log(err);
         } else {
@@ -63,8 +57,8 @@ getAllBook: function(req, res){
       });
 },
 
-getBookWithAuthor: function(req, res){
-    product.find({author: req.body.author}, function(err, result) {
+getPost: function(req, res){
+    ReviewPost.findById({_id: req.body._id}, function(err, result) {
         if (err) {
           console.log(err);
         } else {
@@ -73,25 +67,26 @@ getBookWithAuthor: function(req, res){
       });
 },
 
-getBookWithCategory: function(req, res){
-    product.find({category: req.body.category}, function(err, result) {
-        if (err) {
-          console.log(err);
-        } else {
-          res.json(result);
-        }
-      });
+likePost: function(req, res){
+    ReviewPost.updateOne({_id: req.body._id}, {$push: {likes: req.body.name}}, (err, data) => {
+        if(err) throw err;
+        else return res.json({success: true, msg: 'Successfully saved'});
+    });
 },
 
-getBookWithAuthor: function(req, res){
-    product.find({owner: req.body.owner}, function(err, result) {
-        if (err) {
-          console.log(err);
-        } else {
-          res.json(result);
-        }
-      });
+
+commentPost: function(req, res){
+
+    var newComment = {
+        owner: req.body.owner,
+        content: req.body.content
+    }
+    ReviewPost.updateOne({_id: req.body._id}, {$push: {comments: newComment}}, (err, data) => {
+        if(err) throw err;
+        else return res.json({success: true, msg: 'Successfully saved'});
+    });
 }
+
 
 }
 
