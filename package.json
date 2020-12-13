@@ -24,7 +24,5 @@
     "passport-jwt": "^4.0.0",
     "save": "^2.4.0"
   },
-  "devDependencies": {
-    "cross-env": "^7.0.2"
-  }
+  "devDependencies": {}
 }

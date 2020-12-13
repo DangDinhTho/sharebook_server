@@ -7,8 +7,10 @@ var product = new Schema({
     title: String,
     subtitle: String,
     author: String,
-    publishing_company: String,
+    publisher: String,
+    year: String,
     category: String,
+    address: String,
     time_up_load: {
         type: Date,
         default: Date.now
@@ -17,7 +19,7 @@ var product = new Schema({
         type: Number,
         default: 0.0
     },
-    price: String,
+    price: Number,
     imageURLs: {
         type: [String],
         default: ['']

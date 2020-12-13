@@ -3,6 +3,8 @@ var jwt = require('jwt-simple')
 var config = require('../config/dbconfig')
 const user = require('../models/user')
 const product = require('../models/product')
+const { use } = require('../routers')
+const { Double } = require('mongodb')
 
 
 var functions = {
@@ -19,16 +21,19 @@ addNew: function (req, res) {
             res.json({success: false, msg: 'Enter all fields'})
         }
         else {
-            var newProduct = Product({
-                title: req.body.title,
-                subtitle: req.body.subtitle,
-                price: req.body.price,
-                author: req.body.author,
-                publisher: req.body.publisher,
-                category: req.body.category,
-                owner: decodedtoken.name,
-                imageURLs: [req.file.path]
-            });
+          var newProduct = Product({
+            title: req.body.title,
+            subtitle: req.body.subtitle,
+            price: Number(req.body.price),
+            author: req.body.author,
+            publisher: req.body.publisher,
+            year: req.body.year,
+            category: req.body.category,
+            owner: decodedtoken.name,
+            imageURLs: [req.file.path],
+            address: decodedtoken.address
+        });
+            
             newProduct.save(function (err, newProduct) {
                 if (err) {
                     res.json({success: false, msg: 'Failed to save'})
@@ -37,7 +42,7 @@ addNew: function (req, res) {
                     //return res.json({success: true, msg: 'Successfully saved'});
                     user.updateOne({name: decodedtoken.name}, {$push: {library: newProduct._id}}, (err, data) => {
                         if(err) throw err;
-                        else return res.json({success: true, msg: 'Successfully saved'});
+                        else return res.json({newBook: newProduct, success: true});
                     });
                 }
             })

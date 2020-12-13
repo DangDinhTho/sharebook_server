@@ -23,6 +23,7 @@ router.get('/', (req, res) => {
    res.send('Hello');
 });
 
+router.use('/uploads', express.static("uploads"));
 router.post('/signup', actions.addNew);
 router.post('/authenticate', actions.authenticate);
 router.get('/getinfor', actions.getinfo)
